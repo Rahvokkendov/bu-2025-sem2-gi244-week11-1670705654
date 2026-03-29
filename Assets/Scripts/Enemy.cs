@@ -15,14 +15,28 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 dir = player.transform.position - transform.position;
-        dir.Normalize();
-        rb.AddForce(dir * speed);
+        
+        PlayerPowetUpStun();
+        
+    }
+
+    void PlayerPowetUpStun()
+    {
+        if (player.GetComponent<PlayerController>().hasStunPowerUp)
+        {
+            rb.linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            Vector3 dir = player.transform.position - transform.position;
+            dir.Normalize();
+            rb.AddForce(dir * speed);
+        }
     }
 }

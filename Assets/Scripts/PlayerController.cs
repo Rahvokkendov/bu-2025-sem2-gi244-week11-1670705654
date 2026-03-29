@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private InputAction breakAction;
 
     public bool hasPowerUp = false;
+    public bool hasStunPowerUp = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
         }
         PowerupCheck();
+       
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -66,11 +68,22 @@ public class PlayerController : MonoBehaviour
             }
             countDownRoutine = StartCoroutine(PowerUpCountDown());
         }
+        if (other.CompareTag("StunPowerUp"))
+        {
+            hasStunPowerUp = true;
+            animator.SetBool("hasPower", true);
+            Destroy(other.gameObject);
+             if (countDownRoutine != null)
+            {
+                StopCoroutine(countDownRoutine);
+            }
+            countDownRoutine = StartCoroutine(PowerUpCountDown());
+        }
     }
     
     void PowerupCheck()
     {
-        if (hasPowerUp)
+        if (hasPowerUp || hasStunPowerUp)
         {
             powerupRing.SetActive(true);
         }
@@ -82,6 +95,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(10f);
         hasPowerUp = false;
+        hasStunPowerUp = false;
         powerupRing.SetActive(false);
         animator.SetBool("hasPower", false);
     }
